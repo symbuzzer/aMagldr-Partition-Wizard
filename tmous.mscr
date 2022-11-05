@@ -1,0 +1,197 @@
+systempath=systempath("scriptpath")
+leotype="TMOUS"
+size1="956 MB"
+size2="932 MB"
+title=leotype&" - PARTITION WIZARD V1.20 BY ALI BEYAZ (SYMBUZZER)"
+steps="5 - "&leotype
+x="objShell.SendKeys "
+y="wscript.Sleep 1000^NL^objShell.AppActivate ""Multi-Port TTY Version 1.42""^NL^wscript.Sleep 50"
+
+Call("PRE")
+Sub PRE
+z1=question("Do you want to use last 24mb of nand?^NL^^NL^- If you use, you have "&size1&" usable nand memory^NL^- If not, you have "&size2&" usable nand memory", "Step 1/"&steps, "YesNo")
+ if(z1=1)
+  nandsize=955
+  message("Please select ""Use last 24 MB"" from aMagldr's ""Options"" menu, reboot phone.^NL^Press OK when ready...", title)
+ endif
+ if(z1=0)
+  nandsize=931
+ endif
+Call("REC")
+EndSub
+
+Call("REC")
+Sub REC
+amax="15"
+a=input("Enter RECOVERY size (MB)^NL^^NL^-Maximum size is: "&amax&" MB^NL^-Remained size is: "&nandsize&" MB", "Step 2/"&steps , TRUE, FALSE)
+ if(a=0)
+  a1=question("Are you sure skip this partition?", title, "YesNo")
+   if(a1=1)
+    a=0
+    a2="no"
+    a4=""
+    Call("BOOT")
+   endif
+   if(a1=0)
+    Call("REC")
+   endif
+ endif
+ if (a>amax)
+  message("Maximum size is ("&amax&" MB) reached^NL^Press Ok to return...", title)
+  Call("REC")
+ endif
+ if(a>0)
+  a2=a&" MB"
+ endif
+Call("BOOT")
+EndSub
+
+Call("BOOT")
+Sub BOOT
+bmax="10"
+b=input("Enter BOOT size (MB)^NL^^NL^-Maximum size is: "&bmax&" MB^NL^-Remained size is: "&nandsize-a&" MB", "Step 3/"&steps , TRUE, FALSE)
+ if(b=0)
+  b1=question("Are you sure skip this partition?", title, "YesNo")
+   if(b1=1)
+    b=0
+    b2="no"
+    b4=""
+    Call("SYSTEM")
+   endif
+   if(b1=0)
+    Call("BOOT")
+   endif
+ endif
+ if (b>bmax)
+  message("Maximum size is ("&bmax&" MB) reached^NL^Press Ok to return...", title)
+  Call("BOOT")
+ endif
+ if(b>0)
+  b2=b&" MB"
+ endif
+Call("SYSTEM")
+EndSub
+
+Call("SYSTEM")
+Sub SYSTEM
+cmax="420"
+c=input("Enter SYSTEM size (MB)^NL^^NL^-Maximum size is: "&cmax&" MB^NL^-Remained size is: "&nandsize-a-b&" MB", "Step 4/"&steps , TRUE, FALSE)
+ if(c=0)
+  c1=question("Are you sure skip this partition?", title, "YesNo")
+   if(c1=1)
+    c=0
+    c2="no"
+    c4=""
+    Call("CACHE")
+   endif
+   if(c1=0)
+    Call("SYSTEM")
+   endif
+ endif
+ if (c>cmax)
+  message("Maximum size is ("&cmax&" MB) reached^NL^Press Ok to return...", title)
+  Call("SYSTEM")
+ endif
+ if (c>nandsize-a-b)
+  message("Remained size is ("&nandsize-a-b&" MB) reached^NL^Press Ok to return...", title)
+  Call("SYSTEM")
+ endif
+ if(c>0)
+  c2=c&" MB"
+ endif
+ if(nandsize-a-b-c>0)
+  Call("CACHE")
+ endif
+ if(nandsize-a-b-c=0)
+  d2="no"
+  d4=""
+  Call("DATA")
+ endif
+EndSub
+
+Call("CACHE")
+Sub CACHE
+dmax="44"
+d=input("Enter CACHE size (MB)^NL^^NL^-Maximum size is: "&dmax&" MB^NL^-Remained size is: "&nandsize-a-b-c&" MB", "Step 5/"&steps , TRUE, FALSE)
+ if(d=0)
+  d1=question("Are you sure skip this partition?", title, "YesNo")
+   if(d1=1)
+    d=0
+    d2="no"
+    d4=""
+    Call("DATA")
+   endif
+   if(d1=0)
+    Call("CACHE")
+   endif
+ endif
+ if (d>dmax)
+  message("Maximum size is ("&dmax&" MB) reached^NL^Press Ok to return...", title)
+  Call("CACHE")
+ endif
+ if (d>nandsize-a-b-c)
+  message("Remained size is ("&nandsize-a-b-c&" MB) reached^NL^Press Ok to return...", title)
+  Call("CACHE")
+ endif
+ if(d>0)
+  d2=d&" MB"
+ endif
+Call("DATA")
+EndSub
+
+Call("DATA")
+Sub DATA
+e=nandsize-a-b-c-d
+ if(e>0)
+  e2=e&" MB"
+ endif
+ if(e=0)
+  e2="no"
+  e4=""
+ endif
+f=question("Do you want to continue?:^NL^^NL^-MISC: 1 MB^NL^-RECOVERY: "&a2&"^NL^-BOOT: "&b2&"^NL^-SYSTEM: "&c2&"^NL^-CACHE: "&d2&"^NL^-DATA: "&e2, title, "YesNo")
+ if(f=1)
+  Call("MATH")
+ endif
+ if(f=0)
+  Call ("END")
+ endif
+EndSub
+
+Call("MATH")
+Sub MATH
+if (a>0)
+ a3=numbertohex(a*1024/128)
+ a4=x&"""ad addpart recovery "&a3&" 62 D{ENTER}""^NL^"&y&"^NL^"
+endif
+if (b>0)
+ b3=numbertohex(b*1024/128)
+ b4=x&"""ad addpart boot "&b3&" 61 9{ENTER}""^NL^"&y&"^NL^"
+endif
+if (c>0)
+ c3=numbertohex(c*1024/128)
+ c4=x&"""ad addpart system "&c3&" 50 1{ENTER}""^NL^"&y&"^NL^"
+endif
+if (d>0)
+ d3=numbertohex(d*1024/128)
+ d4=x&"""ad addpart cache "&d3&" 50 41{ENTER}""^NL^"&y&"^NL^"
+endif
+if (e>0)
+ e3=numbertohex(e*1024/128)
+ e4=x&"""ad addpart userdata "&e3&" 50 41{ENTER}""^NL^"&y&"^NL^"
+endif
+Call("VBSEXPORT")
+EndSub
+
+Call("VBSEXPORT")
+Sub VBSEXPORT
+q=readfile(systempath&"\test.vbs")
+writefile(systempath&"\flasher.vbs", q&"^NL^"&y&"^NL^"&x&"""ad fastformat{ENTER}""^NL^"&y&"^NL^"&x&"""ad addpart misc 8 50 1{ENTER}""^NL^"&y&"^NL^"&a4&b4&c4&d4&e4&x&"""Bulls Eye :D -- Rebooting...{ENTER}""^NL^wscript.Sleep 4500^NL^"&y&"^NL^"&x&"""poweroff{ENTER}""^NL^wscript.Sleep 500")
+message("Make sure phone connected to PC via aMagldr USB Mtty. Otherwise partitoning fails!^NL^-Run aMagldr^NL^-Select USB Mtty option from menu^NL^-Connect phone to PC via USB cable^NL^When ready, press continue...", title)
+Call("END")
+EndSub
+
+Call ("END")
+Sub END
+exit
+EndSub
