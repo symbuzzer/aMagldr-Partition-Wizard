@@ -1,4 +1,4 @@
-# aMagldr-Partition-Wizard
+# aMagldr Partition Wizard
 Nand partition wizard for aMagldr installed HTC HD2 (LEO)  
   
 HOW TO USE:  
